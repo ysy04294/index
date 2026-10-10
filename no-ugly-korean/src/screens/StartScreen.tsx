@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Keyboard, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ORDER_OPTIONS, TEXT, type NoticeType } from '../config/scenario';
@@ -14,8 +14,7 @@ export default function StartScreen({ onBegin }: Props) {
   const T = TEXT.start;
   const canStart = id.trim().length > 0;
 
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+  const content = (
       <KeyboardAvoidingView behavior="padding" style={[styles.root, { paddingTop: insets.top + 64, paddingBottom: insets.bottom + 20 }]}>
         <View style={{ flex: 1 }}>
           <Text style={styles.title}>{T.title}</Text>
@@ -52,6 +51,13 @@ export default function StartScreen({ onBegin }: Props) {
         </Pressable>
         <Text style={styles.hint}>{T.hint}</Text>
       </KeyboardAvoidingView>
+  );
+
+  // 앱: 빈 곳을 누르면 키보드 닫기. 웹에서는 이 감싸기가 입력칸 클릭까지 막아서 쓰지 않음
+  if (Platform.OS === 'web') return content;
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      {content}
     </TouchableWithoutFeedback>
   );
 }
