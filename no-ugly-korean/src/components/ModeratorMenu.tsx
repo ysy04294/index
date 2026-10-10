@@ -18,7 +18,7 @@ type Props = {
 /** 숨은 진행자 메뉴 (화면 왼쪽 위 2초 길게 누르기) */
 export default function ModeratorMenu(p: Props) {
   const T = TEXT.moderator;
-  const inTest = p.state.phase !== 'start' && p.state.phase !== 'end';
+  const inTest = p.state.phase !== 'end';
   const act = (fn: () => void) => () => {
     fn();
     p.onClose();
@@ -31,7 +31,7 @@ export default function ModeratorMenu(p: Props) {
           <ScrollView bounces={false}>
             <Text style={styles.title}>{T.title}</Text>
             <Text style={styles.meta}>
-              {p.state.participantId || '-'} · {p.state.order.join('-')} · {p.state.phase}
+              {p.state.order.join('-')} · {p.state.phase}
               {inTest ? ` · ${p.state.order[p.state.typeIndex]}타입` : ''}
             </Text>
 

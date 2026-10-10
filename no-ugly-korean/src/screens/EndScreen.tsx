@@ -16,12 +16,11 @@ export default function EndScreen({ onHome }: Props) {
   const session = logger.current;
   const T = TEXT.end;
 
-  const exportCsv = async (all: boolean) => {
-    if (busy) return;
+  const exportCsv = async () => {
+    if (busy || !session) return;
     setBusy(true);
     try {
-      if (all) await shareCsv(logger.allSessions(), 'all_sessions');
-      else if (session) await shareCsv([session], session.participantId);
+      await shareCsv([session], session.participantId);
     } catch (e) {
       Alert.alert('내보내기 실패', String(e instanceof Error ? e.message : e));
     } finally {
@@ -37,9 +36,6 @@ export default function EndScreen({ onHome }: Props) {
 
         {session && (
           <View style={styles.table}>
-            <Text style={styles.tableTitle}>
-              {session.participantId} · {session.order.join('-')}
-            </Text>
             {session.records.map((r) => (
               <View key={r.seq} style={styles.tr}>
                 <Text style={styles.type}>{r.type}</Text>
@@ -52,11 +48,8 @@ export default function EndScreen({ onHome }: Props) {
         )}
       </ScrollView>
 
-      <Pressable onPress={() => exportCsv(false)} style={({ pressed }) => [styles.primary, pressed && { opacity: 0.85 }]}>
+      <Pressable onPress={exportCsv} style={({ pressed }) => [styles.primary, pressed && { opacity: 0.85 }]}>
         <Text style={styles.primaryText}>{T.exportButton}</Text>
-      </Pressable>
-      <Pressable onPress={() => exportCsv(true)} style={styles.secondary}>
-        <Text style={styles.secondaryText}>{T.exportAllButton}</Text>
       </Pressable>
       <Pressable onPress={onHome} style={styles.secondary}>
         <Text style={[styles.secondaryText, { color: '#5f6368' }]}>{T.restart}</Text>

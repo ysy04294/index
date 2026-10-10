@@ -63,12 +63,11 @@ export const SIMULATION = {
   speedOptions: [0.5, 1, 2] as const,
 };
 
-/** 기본 진행 순서(시작 화면에서 고름) */
-export const ORDER_OPTIONS: NoticeType[][] = [
-  ['A', 'B', 'C'],
-  ['B', 'C', 'A'],
-  ['C', 'A', 'B'],
-];
+/** 진행 순서 (A → B → C) */
+export const ORDER: NoticeType[] = ['A', 'B', 'C'];
+
+/** CSV 파일 이름과 participant_id 칸에 들어가는 값 */
+export const PARTICIPANT_ID = 'no-ugly-korean';
 
 // ─────────────────────────────────────────────
 // 3. 길찾기 안내 배너
@@ -88,15 +87,7 @@ export const NAV_STEPS: { from: number; maneuver: Maneuver; text: string; sub?: 
 // 4. 화면 문구
 // ─────────────────────────────────────────────
 export const TEXT = {
-  start: {
-    title: '노 어글리 코리안',
-    subtitle: '유저테스트 프로토타입',
-    idLabel: '참여자 ID',
-    idPlaceholder: '예: P01',
-    orderLabel: '진행 순서',
-    startButton: '테스트 시작',
-    hint: '진행자 메뉴: 화면 왼쪽 위를 2초간 길게 누르기',
-  },
+  app: { title: '노 어글리 코리안', subtitle: '유저테스트 프로토타입' },
   intro: {
     title: (type: NoticeType) => `${type}타입`,
     progress: (index: number, total: number) => `${index + 1} / ${total}`,
@@ -115,8 +106,7 @@ export const TEXT = {
     title: '테스트가 끝났습니다',
     body: '참여해 주셔서 감사합니다.',
     exportButton: '기록 내보내기 (CSV)',
-    exportAllButton: '이 폰의 전체 기록 내보내기',
-    restart: '처음 화면으로',
+    restart: '처음부터 다시 (A타입)',
   },
   moderator: {
     title: '진행자 메뉴',
@@ -127,7 +117,7 @@ export const TEXT = {
     cView: 'C타입 화면',
     camera: '카메라',
     streetView: 'Street View',
-    home: '처음 화면으로',
+    home: '처음부터 다시 (A타입)',
     close: '닫기',
   },
 };

@@ -32,8 +32,8 @@ export default function WebShell({ children }: { children: ReactNode }) {
       </View>
       {width >= 1100 && (
         <View style={styles.side}>
-          <Text style={styles.sideTitle}>{TEXT.start.title}</Text>
-          <Text style={styles.sideText}>{TEXT.start.subtitle}</Text>
+          <Text style={styles.sideTitle}>{TEXT.app.title}</Text>
+          <Text style={styles.sideText}>{TEXT.app.subtitle}</Text>
           <Text style={styles.sideHint}>📱 휴대폰으로 이 주소를 열면 전체 화면 앱으로 보여요</Text>
           <Text style={styles.sideHint}>🛠 진행자 메뉴: 화면 왼쪽 위 2초 누르기 또는 M 키</Text>
         </View>

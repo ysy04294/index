@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import {
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -28,10 +29,12 @@ export default function NoticeB({ onConfirm, onCardChange, onSpeak }: Props) {
   const [width, setWidth] = useState(0);
   const [page, setPage] = useState(0);
   const pageRef = useRef(0);
+  const scrollRef = useRef<ScrollView>(null);
   const cards = NOTICE_B.cards;
   const last = page === cards.length - 1;
+  const showArrows = Platform.OS === 'web';
 
-  const onScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (!width) return;
     const p = Math.round(e.nativeEvent.contentOffset.x / width);
     if (p !== pageRef.current) {
@@ -40,6 +43,9 @@ export default function NoticeB({ onConfirm, onCardChange, onSpeak }: Props) {
       onCardChange(p + 1);
     }
   };
+
+  // PC(마우스)에서는 끌어서 넘길 수 없으므로 화살표 버튼으로 넘김
+  const goTo = (p: number) => scrollRef.current?.scrollTo({ x: p * width, animated: true });
 
   const speak = (text: string) => {
     onSpeak(text);
@@ -67,7 +73,9 @@ export default function NoticeB({ onConfirm, onCardChange, onSpeak }: Props) {
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
-            onMomentumScrollEnd={onScrollEnd}
+            ref={scrollRef}
+            onScroll={onScroll}
+            scrollEventThrottle={32}
             bounces={false}
           >
             {cards.map((c, i) => (
@@ -96,10 +104,22 @@ export default function NoticeB({ onConfirm, onCardChange, onSpeak }: Props) {
         )}
       </View>
 
-      <View style={styles.dots}>
-        {cards.map((_, i) => (
-          <View key={i} style={[styles.dot, i === page && styles.dotOn]} />
-        ))}
+      <View style={styles.dotsRow}>
+        {showArrows && (
+          <Pressable onPress={() => goTo(page - 1)} disabled={page === 0} style={styles.arrow} hitSlop={8}>
+            <Text style={[styles.arrowText, page === 0 && styles.arrowOff]}>‹</Text>
+          </Pressable>
+        )}
+        <View style={styles.dots}>
+          {cards.map((_, i) => (
+            <View key={i} style={[styles.dot, i === page && styles.dotOn]} />
+          ))}
+        </View>
+        {showArrows && (
+          <Pressable onPress={() => goTo(page + 1)} disabled={last} style={styles.arrow} hitSlop={8}>
+            <Text style={[styles.arrowText, last && styles.arrowOff]}>›</Text>
+          </Pressable>
+        )}
       </View>
 
       <View style={styles.footer}>
@@ -148,7 +168,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   speakText: { fontSize: 15, fontWeight: '700', color: '#1967d2' },
-  dots: { flexDirection: 'row', justifyContent: 'center', gap: 8, marginVertical: 10 },
+  dotsRow: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 16, marginVertical: 10 },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: 8 },
+  arrow: { width: 40, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: 16, backgroundColor: '#f1f3f4' },
+  arrowText: { fontSize: 22, fontWeight: '700', color: '#1a73e8', lineHeight: 24 },
+  arrowOff: { color: '#dadce0' },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: '#dadce0' },
   dotOn: { backgroundColor: '#1a73e8' },
   footer: { paddingHorizontal: 16, height: 52, justifyContent: 'center' },

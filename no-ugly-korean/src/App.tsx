@@ -6,10 +6,8 @@ import { useKeepAwake } from 'expo-keep-awake';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Camera } from 'expo-camera';
 
-import type { NoticeType } from './config/scenario';
 import { currentType, useTestFlow, type CView } from './state/testFlow';
 import { logger } from './utils/logger';
-import StartScreen from './screens/StartScreen';
 import TypeIntroScreen from './screens/TypeIntroScreen';
 import NavScreen from './screens/NavScreen';
 import EndScreen from './screens/EndScreen';
@@ -52,17 +50,17 @@ function Root() {
   }, []);
 
   // ───────── 기록과 함께 상태 전환 ─────────
-  const begin = (participantId: string, order: NoticeType[]) => {
-    logger.startSession(participantId, order);
-    dispatch({ type: 'begin', participantId, order });
-    // C타입 도중에 권한 팝업이 뜨지 않도록 미리 요청 (웹은 C타입에서 요청)
-    if (Platform.OS === 'web') return;
-    Camera.getCameraPermissionsAsync()
-      .then((p) => (!p.granted && p.canAskAgain ? Camera.requestCameraPermissionsAsync() : p))
-      .catch(() => {});
-  };
-
   const startType = () => {
+    // A타입(첫 타입)을 시작할 때 새 기록을 만듦
+    if (state.typeIndex === 0 || !logger.current) {
+      logger.startSession(state.participantId, state.order);
+      // C타입 도중에 권한 팝업이 뜨지 않도록 미리 요청 (웹은 C타입에서 요청)
+      if (Platform.OS !== 'web') {
+        Camera.getCameraPermissionsAsync()
+          .then((p) => (!p.granted && p.canAskAgain ? Camera.requestCameraPermissionsAsync() : p))
+          .catch(() => {});
+      }
+    }
     logger.update(seq, () => ({ startTap: Date.now(), speed: state.speed }));
     dispatch({ type: 'startType' });
   };
@@ -121,7 +119,6 @@ function Root() {
 
   return (
     <View style={styles.root}>
-      {state.phase === 'start' && <StartScreen onBegin={begin} />}
       {state.phase === 'intro' && (
         <TypeIntroScreen key={`intro-${seq}`} type={type} index={state.typeIndex} total={state.order.length} onStart={startType} />
       )}
