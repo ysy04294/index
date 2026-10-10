@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd no-ugly-korean && npm ci",
+  "buildCommand": "cd no-ugly-korean && npx expo export --platform web",
+  "outputDirectory": "no-ugly-korean/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
