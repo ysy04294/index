@@ -77,7 +77,7 @@ export const ORDER_OPTIONS: NoticeType[][] = [
 export type Maneuver = 'straight' | 'right' | 'left' | 'arrive';
 
 export const NAV_STEPS: { from: number; maneuver: Maneuver; text: string; sub?: string }[] = [
-  { from: 0, maneuver: 'straight', text: 'Corsia Agonale 방향으로 직진', sub: '광장 동쪽 출구' },
+  { from: 0, maneuver: 'straight', text: 'Corsia Agonale로 직진', sub: '광장 동쪽 출구' },
   { from: 0.3, maneuver: 'right', text: 'Corso del Rinascimento에서 우회전' },
   { from: 0.48, maneuver: 'left', text: 'Via dei Canestrari로 좌회전' },
   { from: 0.7, maneuver: 'right', text: 'Piazza di S. Eustachio 방향으로 우회전' },

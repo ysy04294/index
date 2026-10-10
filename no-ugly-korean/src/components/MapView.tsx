@@ -1,14 +1,14 @@
 import { useCallback, useImperativeHandle, useMemo, useRef, type Ref } from 'react';
 import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import { WebView, type WebViewMessageEvent } from 'react-native-webview';
 
 import { DESTINATION, FALLBACK_ROUTE, ORIGIN, type LatLng } from '../config/scenario';
-import { GOOGLE_MAPS_API_KEY, WEBVIEW_BASE_URL } from '../config/env';
+import { GOOGLE_MAPS_API_KEY } from '../config/env';
+import HtmlFrame, { type HtmlFrameHandle } from './HtmlFrame';
 import { buildMapHtml } from './map.html.ts';
 
 /**
  * 지도 컴포넌트.
- * 지금은 WebView + Google Maps JavaScript API 로 그립니다 (Expo Go 에서 iOS 구글 지도를 쓰기 위해).
+ * 지금은 WebView(웹에서는 iframe) + Google Maps JavaScript API 로 그립니다 (Expo Go 에서 iOS 구글 지도를 쓰기 위해).
  * 나중에 개발 빌드(expo-dev-client)로 바꾸면 이 파일만 react-native-maps 로 교체하면 됩니다.
  * 바깥에서 쓰는 것은 아래 MapViewHandle / MapViewProps 뿐입니다.
  */
@@ -30,7 +30,7 @@ export type MapViewProps = {
 let cachedRoute: LatLng[] | null = null;
 
 export default function MapView({ ref, style, onRoute }: MapViewProps) {
-  const webRef = useRef<WebView>(null);
+  const webRef = useRef<HtmlFrameHandle>(null);
   const ready = useRef(false);
   const queue = useRef<object[]>([]);
 
@@ -52,7 +52,7 @@ export default function MapView({ ref, style, onRoute }: MapViewProps) {
       queue.current = [...queue.current.filter((m) => (m as { type: string }).type !== (msg as { type: string }).type), msg];
       return;
     }
-    webRef.current?.injectJavaScript(`window.__fromRN && window.__fromRN(${JSON.stringify(msg)}); true;`);
+    webRef.current?.send(msg);
   }, []);
 
   useImperativeHandle(
@@ -65,10 +65,10 @@ export default function MapView({ ref, style, onRoute }: MapViewProps) {
   );
 
   const onMessage = useCallback(
-    (e: WebViewMessageEvent) => {
+    (data: string) => {
       let msg: { type: string; path?: LatLng[]; source?: RouteSource; message?: string; status?: string };
       try {
-        msg = JSON.parse(e.nativeEvent.data);
+        msg = JSON.parse(data);
       } catch {
         return;
       }
@@ -89,24 +89,13 @@ export default function MapView({ ref, style, onRoute }: MapViewProps) {
 
   return (
     <View style={[styles.container, style]}>
-      <WebView
+      <HtmlFrame
         ref={webRef}
-        style={styles.web}
-        originWhitelist={['*']}
-        source={{ html, baseUrl: WEBVIEW_BASE_URL }}
+        html={html}
         onMessage={onMessage}
         onLoadStart={() => {
           ready.current = false;
         }}
-        javaScriptEnabled
-        domStorageEnabled
-        scrollEnabled={false}
-        bounces={false}
-        overScrollMode="never"
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        setSupportMultipleWindows={false}
-        allowsLinkPreview={false}
       />
     </View>
   );
@@ -114,5 +103,4 @@ export default function MapView({ ref, style, onRoute }: MapViewProps) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#e8eaed', overflow: 'hidden' },
-  web: { flex: 1, backgroundColor: '#e8eaed' },
 });

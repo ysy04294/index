@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
+import { BackHandler, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useKeepAwake } from 'expo-keep-awake';
@@ -14,13 +14,16 @@ import TypeIntroScreen from './screens/TypeIntroScreen';
 import NavScreen from './screens/NavScreen';
 import EndScreen from './screens/EndScreen';
 import ModeratorMenu from './components/ModeratorMenu';
+import WebShell from './components/WebShell';
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <Root />
-    </SafeAreaProvider>
+    <WebShell>
+      <SafeAreaProvider>
+        <StatusBar style="dark" />
+        <Root />
+      </SafeAreaProvider>
+    </WebShell>
   );
 }
 
@@ -36,14 +39,24 @@ function Root() {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP).catch(() => {});
     // 안드로이드 뒤로가기 막기 (iOS는 화면 스택이 없어서 스와이프 뒤로가기가 없음)
     const sub = BackHandler.addEventListener('hardwareBackPress', () => true);
-    return () => sub.remove();
+    // 웹(PC): M 키로도 진행자 메뉴 열기
+    const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if ((e.key === 'm' || e.key === 'M') && tag !== 'INPUT' && tag !== 'TEXTAREA') setMenuOpen(true);
+    };
+    if (Platform.OS === 'web') window.addEventListener('keydown', onKey);
+    return () => {
+      sub.remove();
+      if (Platform.OS === 'web') window.removeEventListener('keydown', onKey);
+    };
   }, []);
 
   // ───────── 기록과 함께 상태 전환 ─────────
   const begin = (participantId: string, order: NoticeType[]) => {
     logger.startSession(participantId, order);
     dispatch({ type: 'begin', participantId, order });
-    // C타입 도중에 권한 팝업이 뜨지 않도록 미리 요청
+    // C타입 도중에 권한 팝업이 뜨지 않도록 미리 요청 (웹은 C타입에서 요청)
+    if (Platform.OS === 'web') return;
     Camera.getCameraPermissionsAsync()
       .then((p) => (!p.granted && p.canAskAgain ? Camera.requestCameraPermissionsAsync() : p))
       .catch(() => {});

@@ -12,10 +12,10 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { WebView } from 'react-native-webview';
 
 import { NOTICE_C, STREET_VIEW } from '../../config/scenario';
-import { GOOGLE_MAPS_API_KEY, WEBVIEW_BASE_URL } from '../../config/env';
+import { GOOGLE_MAPS_API_KEY } from '../../config/env';
+import HtmlFrame from '../HtmlFrame';
 import { buildStreetViewHtml } from '../map.html.ts';
 import type { CView } from '../../state/testFlow';
 import { AiLabel } from './common';
@@ -56,16 +56,9 @@ export default function NoticeC({ style, override, onViewResolved, showLabels }:
       {pending && override !== 'streetview' ? (
         <View style={[StyleSheet.absoluteFill, styles.placeholder]} />
       ) : showCamera ? (
-        <CameraView style={StyleSheet.absoluteFill} facing="back" animateShutter={false} />
+        <CameraView style={StyleSheet.absoluteFill} facing="back" mirror={false} animateShutter={false} />
       ) : (
-        <WebView
-          style={StyleSheet.absoluteFill}
-          originWhitelist={['*']}
-          source={{ html: streetViewHtml, baseUrl: WEBVIEW_BASE_URL }}
-          scrollEnabled={false}
-          bounces={false}
-          javaScriptEnabled
-        />
+        <HtmlFrame style={StyleSheet.absoluteFill} html={streetViewHtml} />
       )}
 
       {/* 좌측 상단 Live View 칩, 우측 상단 닫기(동작 없음) */}
@@ -169,7 +162,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 8,
-    maxWidth: 300,
+    maxWidth: 340,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.25)',
   },

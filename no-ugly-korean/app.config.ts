@@ -27,6 +27,9 @@ const config: ExpoConfig = {
   },
   web: {
     favicon: './assets/favicon.png',
+    name: '노 어글리 코리안',
+    bundler: 'metro',
+    output: 'single',
   },
   plugins: [
     [

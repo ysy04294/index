@@ -1,7 +1,6 @@
-import { File, Paths } from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 
 import type { NoticeType } from '../config/scenario';
+import { loadText, saveText, shareFile } from './storage';
 
 /** 타입 하나(A/B/C)를 체험한 기록 */
 export type TypeRecord = {
@@ -31,24 +30,17 @@ export type Session = {
   records: TypeRecord[];
 };
 
-const STORE = new File(Paths.document, 'nuk_sessions.json');
-
 function readAll(): Session[] {
   try {
-    if (!STORE.exists) return [];
-    return JSON.parse(STORE.textSync()) as Session[];
+    const text = loadText();
+    return text ? (JSON.parse(text) as Session[]) : [];
   } catch {
     return [];
   }
 }
 
-function writeAll(sessions: Session[]) {
-  try {
-    if (!STORE.exists) STORE.create({ intermediates: true });
-    STORE.write(JSON.stringify(sessions));
-  } catch (e) {
-    console.warn('기록 저장 실패', e);
-  }
+function writeAll(list: Session[]) {
+  saveText(JSON.stringify(list));
 }
 
 let sessions: Session[] = readAll();
@@ -172,14 +164,9 @@ export function toCsv(list: Session[]): string {
 
 const safeName = (s: string) => s.replace(/[\\/:*?"<>|\s]+/g, '_') || 'unknown';
 
-/** CSV 파일을 만들어 iOS 공유 시트(에어드롭·메일·파일)를 띄움 */
+/** CSV 파일을 만들어 공유 시트(앱·휴대폰) 또는 다운로드(PC)로 내보냄 */
 export async function shareCsv(list: Session[], baseName: string) {
   const d = new Date();
   const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-  const file = new File(Paths.cache, `${safeName(baseName)}_${date}.csv`);
-  if (file.exists) file.delete();
-  file.create();
-  file.write(toCsv(list));
-  if (!(await Sharing.isAvailableAsync())) throw new Error('이 기기에서는 공유를 사용할 수 없어요');
-  await Sharing.shareAsync(file.uri, { mimeType: 'text/csv', UTI: 'public.comma-separated-values-text', dialogTitle: '기록 내보내기' });
+  await shareFile(`${safeName(baseName)}_${date}.csv`, toCsv(list), 'text/csv');
 }
