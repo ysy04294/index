@@ -10,7 +10,7 @@ import {
 const FIGMA_ORIGINS = ["https://www.figma.com", "https://embed.figma.com"];
 const START_NODE_ID = steps[0].nodeId;
 // client-id가 있어도 이 시간 안에 INITIAL_LOAD가 오지 않으면 수동 모드로 바꾼다
-const AUTO_FALLBACK_MS = 10_000;
+const AUTO_FALLBACK_MS = 30_000;
 
 const toUrlId = (nodeId: string) => nodeId.replace(/:/g, "-");
 
@@ -38,7 +38,7 @@ type FigmaEvent = {
 };
 
 export function useFigmaEmbed() {
-  const clientId = (import.meta.env.VITE_FIGMA_CLIENT_ID as string | undefined)?.trim() || undefined;
+  const clientId = (import.meta.env.VITE_FIGMA_CLIENT_ID as string | undefined)?.trim() || "838YAvkyE60Pcous1r76ft";
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isAuto, setIsAuto] = useState(Boolean(clientId));
