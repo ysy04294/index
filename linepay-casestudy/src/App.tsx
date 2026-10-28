@@ -81,25 +81,14 @@ export default function App() {
               onLoad={embed.onIframeLoad}
             />
             <p className="mt-4 min-h-5 text-center text-[13px] text-ink-3">
-              {explain ? (
-                !embed.isAuto && (
-                  <>
-                    <span className="hidden md:inline">설명은 오른쪽에서 넘겨주세요</span>
-                    <span className="md:hidden">설명은 아래에서 넘겨주세요</span>
-                  </>
-                )
-              ) : (
-                <>
-                  화면을 직접 눌러보세요 ·{" "}
-                  <button
-                    type="button"
-                    onClick={embed.restart}
-                    className="font-medium text-ink-2 underline-offset-2 hover:text-green hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
-                  >
-                    처음부터 다시 보기 ↺
-                  </button>
-                </>
-              )}
+              화면을 직접 눌러보세요 ·{" "}
+              <button
+                type="button"
+                onClick={embed.restart}
+                className="font-medium text-ink-2 underline-offset-2 hover:text-green hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green"
+              >
+                처음부터 다시 보기 ↺
+              </button>
             </p>
           </motion.div>
 
