@@ -2,7 +2,7 @@ import type { RefObject } from "react";
 
 export const SCREEN_W = 375;
 export const SCREEN_H = 812;
-const BEZEL = 12;
+const BEZEL = 0;
 export const MOCKUP_W = SCREEN_W + BEZEL * 2;
 export const MOCKUP_H = SCREEN_H + BEZEL * 2;
 
@@ -20,11 +20,11 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
     // 바깥 상자가 축소된 크기만큼 자리를 차지하고, 안쪽은 원래 크기로 그린 뒤 scale로 줄인다
     <div className="relative shrink-0" style={{ width: MOCKUP_W * scale, height: MOCKUP_H * scale }}>
       <div
-        className="absolute left-0 top-0 origin-top-left rounded-[56px] border-[12px] border-[#1A1A1A] bg-[#1A1A1A] shadow-[0_30px_60px_rgba(0,0,0,.18)]"
+        className="absolute left-0 top-0 origin-top-left"
         style={{ width: MOCKUP_W, height: MOCKUP_H, transform: `scale(${scale})` }}
       >
         <div
-          className="relative overflow-hidden rounded-[44px] bg-page"
+          className="relative overflow-hidden bg-page"
           style={{ width: SCREEN_W, height: SCREEN_H }}
         >
           <iframe
