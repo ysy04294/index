@@ -1,7 +1,6 @@
 [build]
   base = "linepay-casestudy"
   command = "npm run build"
-  ignore = "exit 1"
   publish = "dist"
 
 [build.environment]
