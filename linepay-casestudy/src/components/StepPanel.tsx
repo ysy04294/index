@@ -1,5 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Fragment } from "react";
+import { Fragment, useRef } from "react";
+import { createPortal } from "react-dom";
 import { steps } from "../data/steps";
 import StepNav from "./StepNav";
 
@@ -39,6 +40,7 @@ function HandIcon() {
 }
 
 export default function StepPanel({ index, isAuto, onChange }: Props) {
+  const imageDialog = useRef<HTMLDialogElement>(null);
   const step = steps[index];
   const reduce = useReducedMotion();
   const total = String(steps.length).padStart(2, "0");
@@ -48,6 +50,15 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
 
   return (
     <div className="w-full">
+      {createPortal(
+        <dialog ref={imageDialog} aria-label="등급 재화 디자인 확대" className="fixed inset-0 m-auto w-[94vw] max-w-[1800px] max-h-[90vh] overflow-auto rounded-2xl border-0 bg-page p-5 shadow-2xl backdrop:bg-black/50" onClick={(event) => { if (event.target === event.currentTarget) imageDialog.current?.close(); }} onKeyDown={(event) => event.stopPropagation()}>
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <h2 className="text-[16px] font-bold text-ink-1">매화 모티브와 대만 지폐 색으로 만든 등급 재화</h2>
+            <button type="button" autoFocus onClick={() => imageDialog.current?.close()} className="shrink-0 rounded-full px-4 py-2 text-ink-1 hover:bg-line" aria-label="확대 이미지 닫기">닫기 ×</button>
+          </div>
+          <img src="/grade-motif.svg" alt="대만 지폐의 색과 매화 형태를 연결한 4단계 등급 재화" className="block h-auto w-full" width="1800" height="183" />
+        </dialog>, document.body
+      )}
       <div aria-live="polite" className="sr-only">
         {step.eyebrow} {step.title}
       </div>
@@ -75,9 +86,9 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
                 <p><RichText text={p} /></p>
                 {step.id === "main" && i === 1 && (
                   <figure className="my-5">
-                    <a href="/grade-motif.svg" target="_blank" rel="noreferrer" className="block rounded-lg bg-white p-3" aria-label="등급 재화 디자인 이미지 크게 보기">
+                    <button type="button" onClick={() => imageDialog.current?.showModal()} className="block w-full cursor-zoom-in rounded-lg bg-page p-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green" aria-label="등급 재화 디자인 이미지 크게 보기">
                       <img src="/grade-motif.svg" alt="대만 200·500·1000·2000원권의 색과 매화 꽃잎 형태를 연결한 그린·브론즈·블루·퍼플 등급 재화" className="block h-auto w-full" width="1800" height="183" />
-                    </a>
+                    </button>
                     <figcaption className="mt-2 text-[12px] leading-relaxed text-ink-3">그린 → 브론즈 → 블루 → 퍼플 · 이미지를 누르면 크게 볼 수 있습니다.</figcaption>
                   </figure>
                 )}
