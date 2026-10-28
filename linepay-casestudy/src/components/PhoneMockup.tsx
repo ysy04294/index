@@ -24,7 +24,7 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
         style={{ width: MOCKUP_W, height: MOCKUP_H, transform: `scale(${scale})` }}
       >
         <div
-          className="relative bg-page"
+          className="relative overflow-hidden bg-page"
           style={{ width: SCREEN_W, height: SCREEN_H }}
         >
           <iframe
@@ -35,7 +35,7 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
             onLoad={onLoad}
             allowFullScreen
             className="absolute block border-0"
-            style={{ width: "132%", height: "132%", left: "-16%", top: "-16%" }}
+            style={{ width: "100%", height: "100%", inset: 0, transform: "scale(1.32)", transformOrigin: "center" }}
           />
           {!loaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-page" role="status">
