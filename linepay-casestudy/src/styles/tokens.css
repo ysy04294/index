@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  /* brand */
+  --line-green: #06c755;
+  --line-green-dark: #05a847;
+  --line-green-soft: #e6f9ee;
+
+  /* neutral */
+  --bg: #f5f5f5;
+  --surface: #ffffff;
+  --text-1: #111111;
+  --text-2: #555555;
+  --text-3: #949494;
+  --line: #e5e5e5;
+
+  /* grade (재화 컬러, 칩 포인트로만 사용) */
+  --grade-green: #3fae5a;
+  --grade-bronze: #a8743f;
+  --grade-blue: #4a6fd8;
+  --grade-purple: #8e6ad8;
+
+  /* radius */
+  --r-card: 12px;
+  --r-inner: 8px;
+  --r-pill: 999px;
+}
+
+/* Tailwind 유틸리티로 토큰을 쓸 수 있게 연결한다 (bg-green, text-ink-2 ...) */
+@theme inline {
+  --font-sans: "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --color-green: var(--line-green);
+  --color-green-dark: var(--line-green-dark);
+  --color-green-soft: var(--line-green-soft);
+  --color-page: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink-1: var(--text-1);
+  --color-ink-2: var(--text-2);
+  --color-ink-3: var(--text-3);
+  --color-line: var(--line);
+  --color-grade-green: var(--grade-green);
+  --color-grade-bronze: var(--grade-bronze);
+  --color-grade-blue: var(--grade-blue);
+  --color-grade-purple: var(--grade-purple);
+  --radius-card: var(--r-card);
+  --radius-inner: var(--r-inner);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  word-break: keep-all;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes lp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/Header.tsx","./src/components/ModeToggle.tsx","./src/components/PhoneMockup.tsx","./src/components/StepNav.tsx","./src/components/StepPanel.tsx","./src/data/steps.ts","./src/hooks/useFigmaEmbed.ts","./vite.config.ts"],"version":"5.8.3"}
