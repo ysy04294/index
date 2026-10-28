@@ -24,7 +24,7 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
         style={{ width: MOCKUP_W, height: MOCKUP_H, transform: `scale(${scale})` }}
       >
         <div
-          className="relative overflow-hidden bg-page"
+          className="relative bg-page"
           style={{ width: SCREEN_W, height: SCREEN_H }}
         >
           <iframe
