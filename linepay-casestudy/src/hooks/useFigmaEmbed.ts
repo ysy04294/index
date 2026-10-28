@@ -17,7 +17,7 @@ const toUrlId = (nodeId: string) => nodeId.replace(/:/g, "-");
 function buildEmbedSrc(nodeId: string, clientId?: string) {
   const params = new URLSearchParams({
     "node-id": toUrlId(nodeId),
-    "starting-point-node-id": toUrlId(START_NODE_ID),
+    "starting-point-node-id": toUrlId(nodeId),
     scaling: "scale-down",
     "content-scaling": "fixed",
     "hide-ui": "1",
@@ -132,9 +132,10 @@ export function useFigmaEmbed() {
       setStepIndex(i);
       if (isAuto) {
         post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: target.nodeId } });
-      } else if (target.nodeId !== frameNodeId) {
+      } else {
         setLoaded(false);
         setFrameNodeId(target.nodeId);
+        setReloadKey((key) => key + 1);
       }
     },
     [isAuto, frameNodeId, post],
