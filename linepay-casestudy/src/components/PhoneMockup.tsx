@@ -34,7 +34,8 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
             title="LINE Pay 마일리지 Figma 프로토타입"
             onLoad={onLoad}
             allowFullScreen
-            className="absolute inset-0 block h-full w-full border-0"
+            className="absolute block border-0"
+            style={{ width: "132%", height: "132%", left: "-16%", top: "-16%" }}
           />
           {!loaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-page" role="status">
