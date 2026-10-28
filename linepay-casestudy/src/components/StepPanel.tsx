@@ -78,13 +78,6 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
           exit={reduce ? { opacity: 1 } : { opacity: 0, y: -8 }}
           transition={{ duration: reduce ? 0 : 0.2 }}
         >
-          {step.id === "start" && (
-            <div className="mb-7 text-[15px] leading-[1.7] text-ink-2">
-              <h2 className="mb-2 text-[18px] font-bold text-ink-1">방문을 보상받는 경험으로</h2>
-              <p>현재 마일리지와 다음 보상을 쉽게 이해하고, 직접 모아보고 싶어지는 경험으로 풀었습니다.</p>
-              <p className="mt-2">정보의 순서와 등급 그래픽, 프로모션 비주얼, 모션을 함께 설계해 <strong className="font-bold text-ink-1">시선을 끄는 비주얼이 다음 행동까지 이어지도록</strong> 구성했습니다.</p>
-            </div>
-          )}
           <h2 className="mt-3 text-[26px] font-bold leading-[1.3] text-ink-1 md:text-[32px]">{step.title}</h2>
 
           <div className="mt-5 space-y-3 text-[16px] leading-[1.7] text-ink-2 md:text-[17px]">
