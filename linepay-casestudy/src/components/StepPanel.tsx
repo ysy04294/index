@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Fragment } from "react";
-import { steps, type GradeColor } from "../data/steps";
+import { steps } from "../data/steps";
 import StepNav from "./StepNav";
 
 type Props = {
@@ -9,12 +9,6 @@ type Props = {
   onChange: (index: number) => void;
 };
 
-const GRADE_BG: Record<GradeColor, string> = {
-  green: "bg-grade-green",
-  bronze: "bg-grade-bronze",
-  blue: "bg-grade-blue",
-  purple: "bg-grade-purple",
-};
 
 /** "**굵게**" 표기를 <strong>으로 바꾼다 */
 function RichText({ text }: { text: string }) {
@@ -77,25 +71,20 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
 
           <div className="mt-5 space-y-3 text-[16px] leading-[1.7] text-ink-2 md:text-[17px]">
             {step.body.map((p, i) => (
-              <p key={i}>
-                <RichText text={p} />
-              </p>
+              <Fragment key={i}>
+                <p><RichText text={p} /></p>
+                {step.id === "main" && i === 1 && (
+                  <figure className="my-5">
+                    <a href="/grade-motif.svg" target="_blank" rel="noreferrer" className="block rounded-lg bg-white p-3" aria-label="등급 재화 디자인 이미지 크게 보기">
+                      <img src="/grade-motif.svg" alt="대만 200·500·1000·2000원권의 색과 매화 꽃잎 형태를 연결한 그린·브론즈·블루·퍼플 등급 재화" className="block h-auto w-full" width="1800" height="183" />
+                    </a>
+                    <figcaption className="mt-2 text-[12px] leading-relaxed text-ink-3">그린 → 브론즈 → 블루 → 퍼플 · 이미지를 누르면 크게 볼 수 있습니다.</figcaption>
+                  </figure>
+                )}
+              </Fragment>
             ))}
           </div>
 
-          <ul className="mt-6 space-y-2">
-            {step.points.map((pt) => (
-              <li key={pt.tag + pt.text} className="flex items-center gap-3 rounded-card bg-surface px-4 py-[14px]">
-                <span className="shrink-0 rounded-full bg-green-soft px-[10px] py-1 text-[13px] font-bold text-green">
-                  {pt.tag}
-                </span>
-                <span className="text-[15px] font-medium text-ink-1">{pt.text}</span>
-                {pt.grade && (
-                  <span aria-hidden className={`ml-auto h-2 w-2 shrink-0 rounded-full ${GRADE_BG[pt.grade]}`} />
-                )}
-              </li>
-            ))}
-          </ul>
 
           {hint && (
             <p className="mt-4 flex items-center gap-2 text-[14px] font-medium text-ink-3">
