@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 
-export const SCREEN_W = 375;
-export const SCREEN_H = 812;
+export const SCREEN_W = 420;
+export const SCREEN_H = 860;
 const BEZEL = 0;
 export const MOCKUP_W = SCREEN_W + BEZEL * 2;
 export const MOCKUP_H = SCREEN_H + BEZEL * 2;
@@ -35,7 +35,7 @@ export default function PhoneMockup({ iframeRef, iframeKey, src, loaded, scale, 
             onLoad={onLoad}
             allowFullScreen
             className="absolute block border-0"
-            style={{ width: "100%", height: "100%", inset: 0, transform: "scale(1.32)", transformOrigin: "center" }}
+            style={{ width: 495, height: 1072, left: -37.5, top: -106 }}
           />
           {!loaded && (
             <div className="absolute inset-0 flex items-center justify-center bg-page" role="status">
