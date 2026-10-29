@@ -84,7 +84,11 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
             {step.body.map((p, i) => (
               <Fragment key={i}>
                 {step.id === "main" && i === 2 && <h3 className="pt-4 text-[20px] font-bold leading-snug text-ink-1">매화를 모티브로 한 등급 비주얼 디자인</h3>}
-                <p><RichText text={p} /></p>
+                {p.startsWith("- ") ? (
+                  <ul className="list-disc space-y-1 pl-5">
+                    {p.split("\n").map((item, itemIndex) => <li key={itemIndex}><RichText text={item.slice(2)} /></li>)}
+                  </ul>
+                ) : <p><RichText text={p} /></p>}
                 {step.id === "main" && i === 3 && (
                   <figure className="my-5">
                     <button type="button" onClick={() => imageDialog.current?.showModal()} className="block w-full cursor-zoom-in rounded-lg bg-page p-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green" aria-label="등급 재화 디자인 이미지 크게 보기">
