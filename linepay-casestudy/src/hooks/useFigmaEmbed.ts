@@ -95,6 +95,7 @@ export function useFigmaEmbed() {
             if (state) stampExpanded.current = state.replace(/-/g, ":").endsWith("1225:3731");
           }
           if (nodeId === steps[stampStep].nodeId && stampExpanded.current) next = stampStep;
+          if (steps[stepIndexRef.current].id === "motif" && steps[next].id === "main" && !stampExpanded.current) break;
           stepIndexRef.current = next;
           setStepIndex(next);
           break;
@@ -138,6 +139,7 @@ export function useFigmaEmbed() {
     (index: number) => {
       const target = steps[Math.max(0, Math.min(steps.length - 1, index))];
       const i = steps.indexOf(target);
+      stepIndexRef.current = i;
       setStepIndex(i);
       if (isAuto) {
         post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: target.nodeId } });
