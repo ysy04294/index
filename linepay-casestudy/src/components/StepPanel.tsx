@@ -15,8 +15,10 @@ type Props = {
 function RichText({ text }: { text: string }) {
   return (
     <>
-      {text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
-        part.startsWith("**") && part.endsWith("**") ? (
+      {text.split(/(==[^=]+==|\*\*[^*]+\*\*)/g).map((part, i) =>
+        part.startsWith("==") && part.endsWith("==") ? (
+          <mark key={i} className="bg-[#91e99b] text-inherit">{part.slice(2, -2)}</mark>
+        ) : part.startsWith("**") && part.endsWith("**") ? (
           <strong key={i} className="font-bold text-ink-1">
             {part.slice(2, -2)}
           </strong>
