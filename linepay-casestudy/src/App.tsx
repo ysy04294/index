@@ -1,6 +1,7 @@
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import Header from "./components/Header";
+import DesignRationale from "./components/DesignRationale";
 import type { Mode } from "./components/ModeToggle";
 import PhoneMockup, { MOCKUP_H, MOCKUP_W } from "./components/PhoneMockup";
 import StepPanel from "./components/StepPanel";
@@ -10,7 +11,8 @@ const MOBILE_BP = 768;
 const HEADER_H = 64;
 
 function readMode(): Mode {
-  return new URLSearchParams(window.location.search).get("mode") === "proto" ? "proto" : "explain";
+  const value = new URLSearchParams(window.location.search).get("mode");
+  return value === "proto" || value === "rationale" ? value : "explain";
 }
 
 /** 화면 크기에 맞춰 목업 축소 비율을 정한다. 375×812 비율은 그대로 유지된다. */
@@ -40,7 +42,7 @@ export default function App() {
   const setMode = useCallback((next: Mode) => {
     setModeState(next);
     const url = new URL(window.location.href);
-    if (next === "proto") url.searchParams.set("mode", "proto");
+    if (next !== "explain") url.searchParams.set("mode", next);
     else url.searchParams.delete("mode");
     window.history.replaceState(null, "", url);
   }, []);
@@ -66,7 +68,9 @@ export default function App() {
     <div className="min-h-screen">
       <Header mode={mode} onModeChange={setMode} />
 
+      {mode === "rationale" && <DesignRationale />}
       <main
+        style={mode === "rationale" ? { display: "none" } : undefined}
         className="relative mx-auto flex max-w-[1440px] flex-col items-center px-4 py-6 md:min-h-[calc(100vh-64px)] md:flex-row md:justify-center md:gap-20 md:px-10"
       >
         <LayoutGroup>
