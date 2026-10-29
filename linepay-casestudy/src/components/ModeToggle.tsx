@@ -1,8 +1,9 @@
-export type Mode = "explain" | "proto";
+export type Mode = "rationale" | "explain" | "proto";
 
 const OPTIONS: { value: Mode; label: string }[] = [
-  { value: "explain", label: "설명 보기" },
-  { value: "proto", label: "프로토타입만 보기" },
+  { value: "rationale", label: "디자인 근거" },
+  { value: "explain", label: "화면 설명" },
+  { value: "proto", label: "프로토타입" },
 ];
 
 type Props = {
