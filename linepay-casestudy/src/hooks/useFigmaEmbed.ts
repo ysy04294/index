@@ -54,9 +54,12 @@ export function useFigmaEmbed() {
   stepIndexRef.current = stepIndex;
   const gotInitialLoad = useRef(false);
   const stampExpanded = useRef(false);
+  const pending = useRef<{ index: number; nodeId: string } | null>(null);
+  const navigationTimer = useRef<number | undefined>(undefined);
+  const clearNavigationTimer = useCallback(() => window.clearTimeout(navigationTimer.current), []);
 
   const src = useMemo(
-    () => buildEmbedSrc(isAuto ? START_NODE_ID : frameNodeId, clientId),
+    () => buildEmbedSrc(frameNodeId, clientId),
     // 자동 모드에서는 src를 고정해 iframe이 다시 로드되지 않게 한다
     [isAuto, frameNodeId, clientId],
   );
@@ -70,8 +73,6 @@ export function useFigmaEmbed() {
 
   // Figma Embed API 이벤트 수신
   useEffect(() => {
-    if (!isAuto) return;
-
     const onMessage = (event: MessageEvent) => {
       if (!FIGMA_ORIGINS.includes(event.origin) || event.source !== iframeRef.current?.contentWindow) return;
       const msg = event.data as FigmaEvent;
@@ -80,13 +81,25 @@ export function useFigmaEmbed() {
       switch (msg.type) {
         case "INITIAL_LOAD":
           gotInitialLoad.current = true;
+          setIsAuto(true);
           setLoaded(true);
           break;
 
         case "PRESENTED_NODE_CHANGED": {
           const nodeId = msg.data?.presentedNodeId;
           if (!nodeId) break;
-          let next = stepIndexForFrame(nodeId);
+          const requested = pending.current;
+          if (requested && nodeId !== requested.nodeId) break;
+          let next = requested ? requested.index : stepIndexForFrame(nodeId);
+          if (requested) {
+            pending.current = null;
+            clearNavigationTimer();
+            const stamp = steps.find((step) => step.id === "stamp")!;
+            if (nodeId === stamp.nodeId) {
+              stampExpanded.current = steps[requested.index].id === "stamp";
+              post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: stamp.stateTrigger, newVariantId: stampExpanded.current ? "1225:3731" : "1225:3730" } });
+            }
+          }
           if (next < 0) break;
           const stampStep = steps.findIndex((step) => step.id === "stamp");
           const mappings = msg.data?.stateMappings;
@@ -94,8 +107,8 @@ export function useFigmaEmbed() {
             const state = Object.entries(mappings).find(([id]) => stepIndexForState(id) === stampStep)?.[1];
             if (state) stampExpanded.current = state.replace(/-/g, ":").endsWith("1225:3731");
           }
-          if (nodeId === steps[stampStep].nodeId && stampExpanded.current) next = stampStep;
-          if (steps[stepIndexRef.current].id === "motif" && steps[next].id === "main" && !stampExpanded.current) break;
+          if (!requested && nodeId === steps[stampStep].nodeId && stampExpanded.current) next = stampStep;
+          if (!requested && steps[stepIndexRef.current].id === "motif" && steps[next].id === "main" && !stampExpanded.current) break;
           stepIndexRef.current = next;
           setStepIndex(next);
           break;
@@ -133,7 +146,9 @@ export function useFigmaEmbed() {
       window.removeEventListener("message", onMessage);
       window.clearTimeout(timer);
     };
-  }, [isAuto, reloadKey]);
+  }, [reloadKey, post, clearNavigationTimer]);
+
+  useEffect(() => () => clearNavigationTimer(), [clearNavigationTimer]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -141,18 +156,29 @@ export function useFigmaEmbed() {
       const i = steps.indexOf(target);
       stepIndexRef.current = i;
       setStepIndex(i);
-      if (isAuto) {
-        post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: target.nodeId } });
-      } else {
+      clearNavigationTimer();
+      const reloadTarget = () => {
+        pending.current = null;
+        gotInitialLoad.current = false;
+        setIsAuto(false);
         setLoaded(false);
         setFrameNodeId(target.nodeId);
         setReloadKey((key) => key + 1);
+      };
+      if (gotInitialLoad.current) {
+        pending.current = { index: i, nodeId: target.nodeId };
+        post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: target.nodeId } });
+        navigationTimer.current = window.setTimeout(reloadTarget, 2000);
+      } else {
+        reloadTarget();
       }
     },
-    [isAuto, frameNodeId, post],
+    [post, clearNavigationTimer],
   );
 
   const restart = useCallback(() => {
+    clearNavigationTimer();
+    pending.current = null;
     stepIndexRef.current = 0;
     gotInitialLoad.current = false;
     stampExpanded.current = false;
@@ -160,11 +186,11 @@ export function useFigmaEmbed() {
     setFrameNodeId(START_NODE_ID);
     setLoaded(false);
     setReloadKey((key) => key + 1);
-  }, []);
+  }, [clearNavigationTimer]);
 
   const onIframeLoad = useCallback(() => {
     // 수동 모드에서는 INITIAL_LOAD를 기다리지 않는다
-    if (!isAuto) setLoaded(true);
+    setLoaded(true);
   }, [isAuto]);
 
   return {
