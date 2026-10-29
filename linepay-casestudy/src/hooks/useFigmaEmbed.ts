@@ -143,18 +143,12 @@ export function useFigmaEmbed() {
 
   const restart = useCallback(() => {
     stepIndexRef.current = 0;
+    gotInitialLoad.current = false;
     setStepIndex(0);
     setFrameNodeId(START_NODE_ID);
-    if (isAuto && gotInitialLoad.current) {
-      // 시작 프레임을 명시해 현재 흐름의 시작점이 아닌 출석 팝업으로 돌아간다.
-      post({ type: "RESTART" });
-      post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: START_NODE_ID } });
-      return;
-    }
-    gotInitialLoad.current = false;
     setLoaded(false);
     setReloadKey((key) => key + 1);
-  }, [isAuto, post]);
+  }, []);
 
   const onIframeLoad = useCallback(() => {
     // 수동 모드에서는 INITIAL_LOAD를 기다리지 않는다
