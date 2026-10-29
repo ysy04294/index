@@ -83,8 +83,9 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
           <div className="mt-5 space-y-3 text-[16px] leading-[1.7] text-ink-2 md:text-[17px]">
             {step.body.map((p, i) => (
               <Fragment key={i}>
+                {step.id === "main" && i === 2 && <h3 className="pt-4 text-[20px] font-bold leading-snug text-ink-1">매화를 모티브로 한 등급 비주얼 디자인</h3>}
                 <p><RichText text={p} /></p>
-                {step.id === "main" && i === 1 && (
+                {step.id === "main" && i === 3 && (
                   <figure className="my-5">
                     <button type="button" onClick={() => imageDialog.current?.showModal()} className="block w-full cursor-zoom-in rounded-lg bg-page p-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green" aria-label="등급 재화 디자인 이미지 크게 보기">
                       <img src="/grade-motif.svg" alt="대만 200·500·1000·2000원권의 색과 매화 꽃잎 형태를 연결한 그린·브론즈·블루·퍼플 등급 재화" className="block h-auto w-full" width="1800" height="183" />
