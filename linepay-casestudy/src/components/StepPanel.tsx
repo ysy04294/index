@@ -58,7 +58,7 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
             <h2 className="text-[16px] font-bold text-ink-1">매화 모티브와 대만 지폐 색으로 만든 등급 재화</h2>
             <button type="button" autoFocus onClick={() => imageDialog.current?.close()} className="shrink-0 rounded-full px-4 py-2 text-ink-1 hover:bg-line" aria-label="확대 이미지 닫기">닫기 ×</button>
           </div>
-          <img src="/grade-motif.svg" alt="대만 지폐의 색과 매화 형태를 연결한 4단계 등급 재화" className="block h-auto w-full" width="1800" height="183" />
+          <img src="/grade-motif.svg" alt="대만 지폐의 색과 매화 형태를 연결한 4단계 등급 재화" className="block h-auto w-full" width="1026" height="174" />
         </dialog>, document.body
       )}
       <div aria-live="polite" className="sr-only">
@@ -82,6 +82,14 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
         >
           <h2 className="mt-3 text-[26px] font-bold leading-[1.3] text-ink-1 md:text-[32px]">{step.title}</h2>
 
+                {step.id === "motif" && (
+                  <figure className="my-5">
+                    <button type="button" onClick={() => imageDialog.current?.showModal()} className="block w-full cursor-zoom-in rounded-lg bg-page p-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green" aria-label="등급 재화 디자인 이미지 크게 보기">
+                      <img src="/grade-motif.svg" alt="대만 200·500·1000·2000원권의 색과 매화 꽃잎 형태를 연결한 그린·브론즈·블루·퍼플 등급 재화" className="block h-auto w-full" width="1026" height="174" />
+                    </button>
+                    <figcaption className="mt-2 text-[12px] leading-relaxed text-ink-3">그린 → 브론즈 → 블루 → 퍼플 · 이미지를 누르면 크게 볼 수 있습니다.</figcaption>
+                  </figure>
+                )}
           <div className="mt-5 space-y-3 text-[16px] leading-[1.7] text-ink-2 md:text-[17px]">
             {step.body.map((p, i) => (
               <Fragment key={i}>
@@ -90,14 +98,7 @@ export default function StepPanel({ index, isAuto, onChange }: Props) {
                     {p.split("\n").map((item, itemIndex) => <li key={itemIndex}><RichText text={item.slice(2)} /></li>)}
                   </ul>
                 ) : <p><RichText text={p} /></p>}
-                {step.id === "motif" && i === step.body.length - 1 && (
-                  <figure className="my-5">
-                    <button type="button" onClick={() => imageDialog.current?.showModal()} className="block w-full cursor-zoom-in rounded-lg bg-page p-3 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green" aria-label="등급 재화 디자인 이미지 크게 보기">
-                      <img src="/grade-motif.svg" alt="대만 200·500·1000·2000원권의 색과 매화 꽃잎 형태를 연결한 그린·브론즈·블루·퍼플 등급 재화" className="block h-auto w-full" width="1800" height="183" />
-                    </button>
-                    <figcaption className="mt-2 text-[12px] leading-relaxed text-ink-3">그린 → 브론즈 → 블루 → 퍼플 · 이미지를 누르면 크게 볼 수 있습니다.</figcaption>
-                  </figure>
-                )}
+
               </Fragment>
             ))}
           </div>
