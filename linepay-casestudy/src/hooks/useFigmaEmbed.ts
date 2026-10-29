@@ -54,6 +54,7 @@ export function useFigmaEmbed() {
   stepIndexRef.current = stepIndex;
   const gotInitialLoad = useRef(false);
   const stampExpanded = useRef(false);
+  const presentedFrame = useRef(START_NODE_ID);
   const pending = useRef<{ index: number; nodeId: string } | null>(null);
   const navigationTimer = useRef<number | undefined>(undefined);
   const clearNavigationTimer = useCallback(() => window.clearTimeout(navigationTimer.current), []);
@@ -88,6 +89,7 @@ export function useFigmaEmbed() {
         case "PRESENTED_NODE_CHANGED": {
           const nodeId = msg.data?.presentedNodeId;
           if (!nodeId) break;
+          presentedFrame.current = nodeId;
           const requested = pending.current;
           if (requested && nodeId !== requested.nodeId) break;
           let next = requested ? requested.index : stepIndexForFrame(nodeId);
@@ -165,7 +167,12 @@ export function useFigmaEmbed() {
         setFrameNodeId(target.nodeId);
         setReloadKey((key) => key + 1);
       };
-      if (gotInitialLoad.current) {
+      if (gotInitialLoad.current && presentedFrame.current === target.nodeId) {
+        if (target.nodeId === steps.find((step) => step.id === "stamp")!.nodeId) {
+          stampExpanded.current = target.id === "stamp";
+          post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: "1436:20820", newVariantId: stampExpanded.current ? "1225:3731" : "1225:3730" } });
+        }
+      } else if (gotInitialLoad.current) {
         pending.current = { index: i, nodeId: target.nodeId };
         post({ type: "NAVIGATE_TO_FRAME_AND_CLOSE_OVERLAYS", data: { nodeId: target.nodeId } });
         navigationTimer.current = window.setTimeout(reloadTarget, 2000);
