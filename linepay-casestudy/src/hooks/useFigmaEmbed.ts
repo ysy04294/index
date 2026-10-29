@@ -46,7 +46,7 @@ export function useFigmaEmbed() {
   const [stepIndex, setStepIndex] = useState(0);
   // 수동 모드에서 iframe이 보여줄 화면. 바뀌면 iframe을 다시 로드한다.
   const [frameNodeId, setFrameNodeId] = useState(START_NODE_ID);
-  // 처음부터 다시 보기(수동 모드)에서 같은 화면이어도 강제로 다시 로드하기 위한 키
+  // 다시 보기는 모드와 관계없이 iframe을 새로 만들어 내부 진행 상태까지 초기화한다
   const [reloadKey, setReloadKey] = useState(0);
 
   const stepIndexRef = useRef(stepIndex);
@@ -71,7 +71,7 @@ export function useFigmaEmbed() {
     if (!isAuto) return;
 
     const onMessage = (event: MessageEvent) => {
-      if (!FIGMA_ORIGINS.includes(event.origin)) return;
+      if (!FIGMA_ORIGINS.includes(event.origin) || event.source !== iframeRef.current?.contentWindow) return;
       const msg = event.data as FigmaEvent;
       if (!msg || typeof msg !== "object") return;
 
@@ -123,7 +123,7 @@ export function useFigmaEmbed() {
       window.removeEventListener("message", onMessage);
       window.clearTimeout(timer);
     };
-  }, [isAuto]);
+  }, [isAuto, reloadKey]);
 
   const goTo = useCallback(
     (index: number) => {
@@ -142,15 +142,13 @@ export function useFigmaEmbed() {
   );
 
   const restart = useCallback(() => {
+    stepIndexRef.current = 0;
+    gotInitialLoad.current = false;
     setStepIndex(0);
-    if (isAuto) {
-      post({ type: "RESTART" });
-    } else {
-      setLoaded(false);
-      setFrameNodeId(START_NODE_ID);
-      setReloadKey((k) => k + 1);
-    }
-  }, [isAuto, post]);
+    setLoaded(false);
+    setFrameNodeId(START_NODE_ID);
+    setReloadKey((key) => key + 1);
+  }, []);
 
   const onIframeLoad = useCallback(() => {
     // 수동 모드에서는 INITIAL_LOAD를 기다리지 않는다
