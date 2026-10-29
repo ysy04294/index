@@ -33,7 +33,8 @@ type FigmaEvent = {
   data?: {
     presentedNodeId?: string;
     nodeId?: string;
-    newVariant?: { name?: string };
+    newVariantId?: string;
+    stateMappings?: Record<string, string>;
   };
 };
 
@@ -52,6 +53,7 @@ export function useFigmaEmbed() {
   const stepIndexRef = useRef(stepIndex);
   stepIndexRef.current = stepIndex;
   const gotInitialLoad = useRef(false);
+  const stampExpanded = useRef(false);
 
   const src = useMemo(
     () => buildEmbedSrc(isAuto ? START_NODE_ID : frameNodeId, clientId),
@@ -84,10 +86,16 @@ export function useFigmaEmbed() {
         case "PRESENTED_NODE_CHANGED": {
           const nodeId = msg.data?.presentedNodeId;
           if (!nodeId) break;
-          const next = stepIndexForFrame(nodeId);
+          let next = stepIndexForFrame(nodeId);
           if (next < 0) break;
-          // 같은 화면을 쓰는 단계(main ↔ stamp)에 있으면 현재 단계를 유지한다
-          if (steps[stepIndexRef.current].nodeId === nodeId) break;
+          const stampStep = steps.findIndex((step) => step.id === "stamp");
+          const mappings = msg.data?.stateMappings;
+          if (mappings && nodeId === steps[stampStep].nodeId) {
+            const state = Object.entries(mappings).find(([id]) => stepIndexForState(id) === stampStep)?.[1];
+            if (state) stampExpanded.current = state.replace(/-/g, ":").endsWith("1225:3731");
+          }
+          if (nodeId === steps[stampStep].nodeId && stampExpanded.current) next = stampStep;
+          stepIndexRef.current = next;
           setStepIndex(next);
           break;
         }
@@ -97,14 +105,15 @@ export function useFigmaEmbed() {
           if (!nodeId) break;
           const stateStep = stepIndexForState(nodeId);
           if (stateStep < 0) break;
-          const variant = msg.data?.newVariant?.name ?? "";
-          const expanded = variant.includes("펼침")
-            ? true
-            : variant.includes("접힘")
-              ? false
-              : stepIndexRef.current !== stateStep; // 이름을 알 수 없으면 토글로 판단
+          const variantId = msg.data?.newVariantId?.replace(/-/g, ":");
+          if (!variantId) break;
+          if (variantId.endsWith("1225:3731")) stampExpanded.current = true;
+          else if (variantId.endsWith("1225:3730")) stampExpanded.current = false;
+          else break;
           const baseStep = stepIndexForFrame(steps[stateStep].nodeId);
-          setStepIndex(expanded ? stateStep : baseStep);
+          const next = stampExpanded.current ? stateStep : baseStep;
+          stepIndexRef.current = next;
+          setStepIndex(next);
           break;
         }
       }
@@ -144,6 +153,7 @@ export function useFigmaEmbed() {
   const restart = useCallback(() => {
     stepIndexRef.current = 0;
     gotInitialLoad.current = false;
+    stampExpanded.current = false;
     setStepIndex(0);
     setFrameNodeId(START_NODE_ID);
     setLoaded(false);
