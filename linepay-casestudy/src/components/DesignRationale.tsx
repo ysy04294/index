@@ -27,9 +27,9 @@ return <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-10 md:py-12
 <p className="mt-5 text-right text-[12px] text-ink-3">출처 · Antavo, Global Customer Loyalty Report 2026</p>
 </article>
 </div>
-<div className="mt-6 grid gap-5 lg:grid-cols-3">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5 text-center">
-<p className="text-[18px] font-bold text-green">{item.key}</p>
-<h3 className="whitespace-pre-line text-[17px] font-bold leading-snug text-ink-1">{item.title}</h3>
+<div className="mt-6 grid gap-5 lg:grid-cols-3">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5">
+<p className="text-center text-[18px] font-bold text-green">{item.key}</p>
+<h3 className="whitespace-pre-line text-center text-[17px] font-bold leading-snug text-ink-1">{item.title}</h3>
 <div className="mt-2 flex gap-2">{item.stats.map(([value,label])=><div key={value} className="min-w-0 flex-1 rounded-xl bg-page p-2 text-center"><p className="text-[17px] font-bold text-ink-1">{value}</p><p className="text-[11px] text-ink-2">{label}</p></div>)}</div>
 <p className="mt-2 text-[13px] leading-[1.7] text-ink-2">{item.body}</p>
 <p className="mt-2 text-[10px] text-ink-3">출처 · {item.source}</p>
