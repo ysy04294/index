@@ -99,7 +99,7 @@ export function useFigmaEmbed() {
             const stamp = steps.find((step) => step.id === "stamp")!;
             if (nodeId === stamp.nodeId) {
               stampExpanded.current = steps[requested.index].id === "stamp";
-              post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: stamp.stateTrigger, newVariantId: stampExpanded.current ? "1225:3731" : "1225:3730" } });
+              post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: stamp.stateTrigger, newVariantId: stampExpanded.current ? "1:635" : "1:601" } });
             }
           }
           if (next < 0) break;
@@ -107,7 +107,7 @@ export function useFigmaEmbed() {
           const mappings = msg.data?.stateMappings;
           if (mappings && nodeId === steps[stampStep].nodeId) {
             const state = Object.entries(mappings).find(([id]) => stepIndexForState(id) === stampStep)?.[1];
-            if (state) stampExpanded.current = state.replace(/-/g, ":").endsWith("1225:3731");
+            if (state) stampExpanded.current = state.replace(/-/g, ":").endsWith("1:635");
           }
           if (!requested && nodeId === steps[stampStep].nodeId && stampExpanded.current) next = stampStep;
           if (!requested && steps[stepIndexRef.current].id === "motif" && steps[next].id === "main" && !stampExpanded.current) break;
@@ -123,8 +123,8 @@ export function useFigmaEmbed() {
           if (stateStep < 0) break;
           const variantId = msg.data?.newVariantId?.replace(/-/g, ":");
           if (!variantId) break;
-          if (variantId.endsWith("1225:3731")) stampExpanded.current = true;
-          else if (variantId.endsWith("1225:3730")) stampExpanded.current = false;
+          if (variantId.endsWith("1:635")) stampExpanded.current = true;
+          else if (variantId.endsWith("1:601")) stampExpanded.current = false;
           else break;
           const baseStep = stepIndexForFrame(steps[stateStep].nodeId);
           const next = stampExpanded.current ? stateStep : baseStep;
@@ -170,7 +170,7 @@ export function useFigmaEmbed() {
       if (gotInitialLoad.current && presentedFrame.current === target.nodeId) {
         if (target.nodeId === steps.find((step) => step.id === "stamp")!.nodeId) {
           stampExpanded.current = target.id === "stamp";
-          post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: "1436:20820", newVariantId: stampExpanded.current ? "1225:3731" : "1225:3730" } });
+          post({ type: "CHANGE_COMPONENT_STATE", data: { nodeId: "1:2101", newVariantId: stampExpanded.current ? "1:635" : "1:601" } });
         }
       } else if (gotInitialLoad.current) {
         pending.current = { index: i, nodeId: target.nodeId };
