@@ -13,7 +13,7 @@ export default function DesignRationale(){
 return <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-10 md:py-12">
 <section aria-labelledby="research-title">
 <span className="inline-block rounded-full bg-green px-4 py-1 text-[16px] font-bold text-white">기획 배경</span>
-<div className="mt-5 grid gap-6 lg:grid-cols-[2fr_1fr]">
+<div className="mt-5">
 <div>
 <h2 id="research-title" className="text-[28px] font-bold leading-[1.5] text-ink-1 md:text-[36px]">마일리지를 모을 명분은 있지만 계속할 명분도 없다,<br/>한 번의 참여를 지속적인 습관으로 이어가려면?</h2>
 <article className="mt-10 rounded-3xl bg-surface p-6 md:p-12">
@@ -27,7 +27,7 @@ return <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-10 md:py-12
 <p className="mt-5 text-right text-[12px] text-ink-3">출처 · Antavo, Global Customer Loyalty Report 2026</p>
 </article>
 </div>
-<div className="space-y-4">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5">
+<div className="mt-6 grid gap-5 lg:grid-cols-3">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5">
 <p className="text-[18px] font-bold text-green">{item.key}</p>
 <h3 className="text-[17px] font-bold leading-snug text-ink-1">{item.title}</h3>
 <div className="mt-2 flex gap-2">{item.stats.map(([value,label])=><div key={value} className="min-w-0 flex-1 rounded-xl bg-page p-2 text-center"><p className="text-[17px] font-bold text-ink-1">{value}</p><p className="text-[11px] text-ink-2">{label}</p></div>)}</div>
