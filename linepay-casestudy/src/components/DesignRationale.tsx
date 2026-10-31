@@ -1,7 +1,7 @@
 
 const research = [
 {key:"VALUE",title:"작은 보상은 가치가 작게 느껴질 수 있다",stats:[["6,947P","월평균 적립 포인트"],["2.7 / 5","시간·노력 대비 만족도"]],body:"금융 앱테크 이용자들은 월평균 6,947P를 적립하지만, 시간·노력 대비 적립 포인트 만족도는 2.7/5점으로 낮게 나타났습니다.",source:"한국소비자원"},
-{key:"DIRECTION",title:"현재 포인트만으로는 다음 목표가 보이지 않는다",stats:[["보유 → 목표 → 방법","리워드 화면에서 반복된 정보 흐름"]],body:"국내 금융·페이 서비스를 직접 비교하면서 현재 보유 현황 → 다음 목표·혜택 → 포인트를 얻는 방법이 반복적으로 사용되는 흐름임을 확인했습니다.",source:"국내 금융·페이 서비스 직접 사용 및 화면 비교"},
+{key:"DIRECTION",title:"현재 포인트만으로는\n다음 목표가 보이지 않는다",stats:[["보유 → 목표 → 방법","리워드 화면에서 반복된 정보 흐름"]],body:"국내 금융·페이 서비스를 직접 비교하면서 현재 보유 현황 → 다음 목표·혜택 → 포인트를 얻는 방법이 반복적으로 사용되는 흐름임을 확인했습니다.",source:"국내 금융·페이 서비스 직접 사용 및 화면 비교"},
 {key:"ROUTINE",title:"지속적인 참여는 일상적인 접점과 연결된다",stats:[["67.7%","앱테크를 습관으로 인식"],["2.44.1%","특정 일과에 맞춰 참여"]],body:"앱테크 이용자의 67.7%는 마일리지 획득 행동을 일종의 습관으로 인식했고 44.1%는 특정 일과에 맞춰 습관적으로 참여한다고 응답했습니다.",source:"대학내일 20대연구소"},
 ];
 const principles=[
@@ -27,9 +27,9 @@ return <div className="mx-auto w-full max-w-[1440px] px-4 py-8 md:px-10 md:py-12
 <p className="mt-5 text-right text-[12px] text-ink-3">출처 · Antavo, Global Customer Loyalty Report 2026</p>
 </article>
 </div>
-<div className="mt-6 grid gap-5 lg:grid-cols-3">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5">
+<div className="mt-6 grid gap-5 lg:grid-cols-3">{research.map(item=><article key={item.key} className="rounded-2xl bg-surface p-5 text-center">
 <p className="text-[18px] font-bold text-green">{item.key}</p>
-<h3 className="text-[17px] font-bold leading-snug text-ink-1">{item.title}</h3>
+<h3 className="whitespace-pre-line text-[17px] font-bold leading-snug text-ink-1">{item.title}</h3>
 <div className="mt-2 flex gap-2">{item.stats.map(([value,label])=><div key={value} className="min-w-0 flex-1 rounded-xl bg-page p-2 text-center"><p className="text-[17px] font-bold text-ink-1">{value}</p><p className="text-[11px] text-ink-2">{label}</p></div>)}</div>
 <p className="mt-2 text-[13px] leading-[1.7] text-ink-2">{item.body}</p>
 <p className="mt-2 text-[10px] text-ink-3">출처 · {item.source}</p>
