@@ -17,13 +17,13 @@ export type Step = {
 
 export type GradeColor = "green" | "bronze" | "blue" | "purple";
 
-export const FIGMA_FILE_KEY = "71jSPcfmc8ldKwZtJVVVkt";
-export const FIGMA_FILE_NAME = "LINE-Pay-Mileage";
+export const FIGMA_FILE_KEY = "BJhWh1981hJLBvR8hC2CIr";
+export const FIGMA_FILE_NAME = "line-pay";
 
 export const steps: Step[] = [
   {
     "id": "start",
-    "nodeId": "1496:22698",
+    "nodeId": "1:1949",
     "label": "출석 완료",
     "title": "첫 보상은 첫 클릭보다 먼저!",
     "body": [
@@ -36,7 +36,7 @@ export const steps: Step[] = [
   },
   {
     "id": "motif",
-    "nodeId": "1436:20764",
+    "nodeId": "1:2058",
     "label": "등급 비주얼",
     "title": "등급이 오를수록 피어나는 대만의 꽃, 매화",
     "body": [
@@ -49,7 +49,7 @@ export const steps: Step[] = [
   },
   {
     "id": "grade",
-    "nodeId": "1436:20966",
+    "nodeId": "1:2119",
     "label": "등급과 혜택",
     "title": "달라지는 매화 컬러로 다음 등급 미리보기",
     "body": [
@@ -62,7 +62,7 @@ export const steps: Step[] = [
   },
   {
     "id": "main",
-    "nodeId": "1436:20764",
+    "nodeId": "1:2058",
     "label": "메인",
     "title": "현재는 한눈에, 다음 보상을 눈앞에",
     "body": [
@@ -75,8 +75,8 @@ export const steps: Step[] = [
   },
   {
     "id": "stamp",
-    "nodeId": "1436:20764",
-    "stateTrigger": "1436:20820",
+    "nodeId": "1:2058",
+    "stateTrigger": "1:2101",
     "label": "결제 스탬프",
     "title": "결제 한 번을, 다음 보상의 한 칸으로",
     "body": [
@@ -91,7 +91,7 @@ export const steps: Step[] = [
   },
   {
     "id": "collect",
-    "nodeId": "1436:21051",
+    "nodeId": "1:2171",
     "label": "마일리지 모으기",
     "title": "참여는 다채롭게, 보상은 차곡차곡",
     "body": [
